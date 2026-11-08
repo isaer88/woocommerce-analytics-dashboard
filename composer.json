@@ -1,0 +1,7 @@
+{
+  "name": "isaer1988/woocommerce-analytics-dashboard",
+  "description": "Modular WooCommerce analytics dashboard plugin",
+  "type": "wordpress-plugin",
+  "license": "GPL-2.0-or-later",
+  "require": {"php": ">=8.1"}
+}
