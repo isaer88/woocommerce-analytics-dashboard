@@ -1,20 +1,23 @@
 === WooCommerce Analytics Dashboard ===
-Contributors: isaer1988
+Contributors: wcad-contributors
 Tags: woocommerce, analytics, dashboard, reports
 Requires at least: 6.4
 Requires PHP: 8.1
 Requires Plugins: woocommerce
-Stable tag: 0.1.0
+Stable tag: 0.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Modular WooCommerce analytics dashboard. Version 0.1.0 provides the foundation only.
+Admin dashboard framework for WooCommerce analytics.
+
+== Description ==
+Version 0.2.0 introduces a responsive admin dashboard, demo KPI cards, a demo sales chart, sample product table, 7/30/90-day filters, settings and a permission-protected REST endpoint. All financial values are simulated and are NOT actual WooCommerce sales.
 
 == Installation ==
-1. Install and activate WooCommerce.
-2. Upload the plugin ZIP through Plugins > Add New > Upload Plugin.
-3. Activate the plugin and open WooCommerce > Analytics Dashboard.
+Upload the plugin ZIP using Plugins > Add New > Upload Plugin, activate WooCommerce, then open WooCommerce > Analytics Dashboard.
 
 == Changelog ==
+= 0.2.0 =
+* Added demo analytics interface, REST endpoint and settings.
 = 0.1.0 =
-* Initial core foundation, dependency checks, module manager and admin screen.
+* Initial modular plugin foundation.

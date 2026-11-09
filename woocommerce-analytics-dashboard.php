@@ -2,7 +2,7 @@
 /**
  * Plugin Name: WooCommerce Analytics Dashboard
  * Description: Modular analytics dashboard foundation for WooCommerce.
- * Version: 0.1.0
+ * Version: 0.2.0
  * Requires at least: 6.4
  * Requires PHP: 8.1
  * Requires Plugins: woocommerce
@@ -11,7 +11,7 @@
  * License: GPL-2.0-or-later
  */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
-define( 'WCAD_VERSION', '0.1.0' );
+define( 'WCAD_VERSION', '0.2.0' );
 define( 'WCAD_FILE', __FILE__ );
 define( 'WCAD_PATH', plugin_dir_path( __FILE__ ) );
 define( 'WCAD_URL', plugin_dir_url( __FILE__ ) );

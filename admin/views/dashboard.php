@@ -1,12 +1,9 @@
-<?php
-if ( ! defined( 'ABSPATH' ) ) { exit; }
-?>
-<div class="wrap wcad-wrap">
-    <h1><?php esc_html_e( 'WooCommerce Analytics Dashboard', 'woocommerce-analytics-dashboard' ); ?></h1>
-    <div class="wcad-panel">
-        <h2><?php esc_html_e( 'Core Foundation v0.1.0', 'woocommerce-analytics-dashboard' ); ?></h2>
-        <p><?php esc_html_e( 'The plugin is active and WooCommerce was detected successfully.', 'woocommerce-analytics-dashboard' ); ?></p>
-        <p><strong><?php esc_html_e( 'Loaded modules:', 'woocommerce-analytics-dashboard' ); ?></strong> <?php echo esc_html( (string) $module_count ); ?></p>
-        <p><?php esc_html_e( 'Analytics charts and metrics will arrive in future releases.', 'woocommerce-analytics-dashboard' ); ?></p>
-    </div>
+<?php if ( ! defined( 'ABSPATH' ) ) { exit; } ?>
+<div class="wrap wcad-wrap" id="wcad-dashboard">
+    <div class="wcad-heading"><div><p class="wcad-eyebrow">WOOCOMMERCE / ANALYTICS</p><h1><?php esc_html_e( 'Analytics Dashboard', 'woocommerce-analytics-dashboard' ); ?></h1><p class="wcad-muted"><?php esc_html_e( 'Store performance at a glance', 'woocommerce-analytics-dashboard' ); ?></p></div><span class="wcad-demo-tag"><?php esc_html_e( 'DEMO DATA — Not actual sales', 'woocommerce-analytics-dashboard' ); ?></span></div>
+    <div class="wcad-toolbar"><div class="wcad-range" role="group" aria-label="<?php esc_attr_e( 'Date range', 'woocommerce-analytics-dashboard' ); ?>"><button type="button" data-days="7">7 days</button><button type="button" data-days="30">30 days</button><button type="button" data-days="90">90 days</button></div><span class="wcad-muted" id="wcad-status" role="status" aria-live="polite"><?php esc_html_e( 'Loading demo data…', 'woocommerce-analytics-dashboard' ); ?></span></div>
+    <div class="wcad-kpis"><article class="wcad-card"><p>Total Sales</p><strong id="wcad-sales">—</strong><small id="wcad-change">—</small></article><article class="wcad-card"><p>Orders</p><strong id="wcad-orders">—</strong><small>Demo orders</small></article><article class="wcad-card"><p>Average Order Value</p><strong id="wcad-aov">—</strong><small>Demo AOV</small></article><article class="wcad-card"><p>Refunds</p><strong id="wcad-refunds">—</strong><small>Demo refunds</small></article></div>
+    <section class="wcad-card wcad-chart-card"><div class="wcad-section-head"><div><h2>Sales Performance</h2><p class="wcad-muted">Current period compared with previous period</p></div><div class="wcad-legend"><span><i class="wcad-dot wcad-dot-primary"></i> Current</span><span><i class="wcad-dot wcad-dot-muted"></i> Previous</span></div></div><div class="wcad-chart-wrap"><canvas id="wcad-sales-chart" role="img" aria-label="Demo sales performance line chart"></canvas></div></section>
+    <section class="wcad-card wcad-products"><div class="wcad-section-head"><div><h2>Top Products</h2><p class="wcad-muted">Sample products, not connected to your store</p></div><span class="wcad-pill">DEMO</span></div><div class="wcad-table-scroll"><table class="widefat striped"><thead><tr><th>Product</th><th>Units sold</th><th>Revenue</th></tr></thead><tbody id="wcad-products-body"><tr><td colspan="3">Loading…</td></tr></tbody></table></div></section>
+    <p class="wcad-footer">WCAD v<?php echo esc_html( WCAD_VERSION ); ?> · <?php echo esc_html( (string) $module_count ); ?> module(s) loaded · Live WooCommerce analytics planned for v0.3.0</p>
 </div>
