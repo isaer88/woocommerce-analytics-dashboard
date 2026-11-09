@@ -9,7 +9,7 @@ final class WCAD_REST_API {
             'methods' => WP_REST_Server::READABLE,
             'permission_callback' => function () { return current_user_can( 'manage_woocommerce' ); },
             'callback' => function ( WP_REST_Request $request ) {
-                return rest_ensure_response( WCAD_Demo_Data::get( $request->get_param( 'days' ) ) );
+                return rest_ensure_response( WCAD_Repository::overview( (int) $request->get_param( 'days' ) ) );
             },
             'args' => array( 'days' => array(
                 'default' => 30, 'sanitize_callback' => 'absint',

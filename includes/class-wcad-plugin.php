@@ -11,7 +11,9 @@ final class WCAD_Plugin {
     public function run() {
         $this->modules = new WCAD_Module_Manager();
         $this->modules->load();
-        require_once WCAD_PATH . 'includes/class-wcad-demo-data.php';
+        require_once WCAD_PATH . 'includes/class-wcad-date-range.php';
+        require_once WCAD_PATH . 'includes/class-wcad-cache.php';
+        require_once WCAD_PATH . 'includes/class-wcad-repository.php';
         require_once WCAD_PATH . 'includes/class-wcad-rest-api.php';
         WCAD_REST_API::register();
         if ( is_admin() ) {
