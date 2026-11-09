@@ -1,0 +1,19 @@
+(function(){'use strict';
+const root=document.getElementById('wcad-products-page');if(!root||typeof wcadProductsConfig==='undefined')return;
+const $=id=>document.getElementById(id),buttons=[...root.querySelectorAll('[data-days]')];let last=null,controller=null;
+const num=v=>new Intl.NumberFormat().format(Number(v)||0);
+const money=(v,c)=>new Intl.NumberFormat(undefined,{style:'currency',currency:c}).format(Number(v)||0);
+function fillRows(id,items,fields){const body=$(id);body.replaceChildren();if(!items.length){const tr=document.createElement('tr'),td=document.createElement('td');td.colSpan=fields.length;td.textContent='No data in this period';tr.appendChild(td);body.appendChild(tr);return;}items.forEach(item=>{const tr=document.createElement('tr');fields.forEach(fn=>{const td=document.createElement('td');td.textContent=fn(item);tr.appendChild(td)});body.appendChild(tr)});}
+function draw(data){last=data;const t=data.totals;$('wcad-products-units').textContent=num(t.units);$('wcad-products-revenue').textContent=money(t.revenue,data.currency);$('wcad-products-products').textContent=num(t.products);$('wcad-products-categories').textContent=num(t.categories);
+fillRows('wcad-products-product-rows',data.products,[r=>r.name,r=>num(r.units),r=>money(r.revenue,data.currency)]);
+fillRows('wcad-products-category-rows',data.categories,[r=>r.name,r=>num(r.units),r=>money(r.revenue,data.currency)]);
+fillRows('wcad-products-daily-rows',data.rows,[r=>r.date,r=>num(r.units),r=>money(r.revenue,data.currency)]);
+$('wcad-products-notes').textContent=data.notes||'';window.WCADChart($('wcad-products-chart'),data.rows.map(r=>r.date),data.rows.map(r=>r.revenue),data.rows.map(()=>0),v=>money(v,data.currency));$('wcad-products-export').disabled=false;$('wcad-products-daily-export').disabled=false;}
+async function load(days){if(controller)controller.abort();controller=new AbortController();const c=controller;buttons.forEach(b=>{b.disabled=true;b.classList.toggle('is-active',Number(b.dataset.days)===days)});$('wcad-products-status').textContent='Loading products…';$('wcad-products-export').disabled=true;$('wcad-products-daily-export').disabled=true;
+try{const url=new URL(wcadProductsConfig.endpoint);url.searchParams.set('days',days);const res=await fetch(url.toString(),{headers:{'X-WP-Nonce':wcadProductsConfig.nonce},credentials:'same-origin',signal:c.signal});const json=await res.json();if(!res.ok)throw Error(json.message||'HTTP '+res.status);if(controller!==c)return;draw(json);$('wcad-products-status').textContent='Showing '+days+' days · Live WooCommerce data';}catch(e){if(e.name!=='AbortError'&&controller===c)$('wcad-products-status').textContent='Error: '+e.message;}finally{if(controller===c)buttons.forEach(b=>b.disabled=false);}}
+function csvDownload(items,fields,name){if(!last)return;const esc=v=>'"'+String(v??'').replace(/"/g,'""')+'"';const csv=[fields.join(','),...items.map(r=>fields.map(k=>esc(r[k])).join(','))].join('\r\n');const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='wcad-'+name+'-'+last.days+'-days.csv';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+buttons.forEach(b=>b.addEventListener('click',()=>load(Number(b.dataset.days))));
+$('wcad-products-export').addEventListener('click',()=>{if(last)csvDownload(last.products,['product_id','variation_id','name','units','revenue'],'products')});
+$('wcad-products-daily-export').addEventListener('click',()=>{if(last)csvDownload(last.rows,['date','units','revenue'],'product-daily')});
+let timer;window.addEventListener('resize',()=>{clearTimeout(timer);timer=setTimeout(()=>{if(last)draw(last)},150)});load([7,30,90].includes(Number(wcadProductsConfig.defaultDays))?Number(wcadProductsConfig.defaultDays):30);
+})();

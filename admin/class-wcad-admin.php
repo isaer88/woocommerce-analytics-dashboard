@@ -9,10 +9,13 @@ final class WCAD_Admin {
         add_action( 'admin_init', array( $this, 'settings' ) );
     }
     public function menu() {
-        add_submenu_page( 'woocommerce', __( 'Analytics Dashboard', 'woocommerce-analytics-dashboard' ), __( 'Analytics Dashboard', 'woocommerce-analytics-dashboard' ), 'manage_woocommerce', 'wcad-dashboard', array( $this, 'render' ) );
-        add_submenu_page( 'woocommerce', __( 'Sales Analytics', 'woocommerce-analytics-dashboard' ), __( 'Sales Analytics', 'woocommerce-analytics-dashboard' ), 'manage_woocommerce', 'wcad-sales', array( $this, 'render_sales' ) );
-        add_submenu_page( 'woocommerce', __( 'Orders Analytics', 'woocommerce-analytics-dashboard' ), __( 'Orders Analytics', 'woocommerce-analytics-dashboard' ), 'manage_woocommerce', 'wcad-orders', array( $this, 'render_orders' ) );
-        add_submenu_page( 'woocommerce', __( 'WCAD Settings', 'woocommerce-analytics-dashboard' ), __( 'WCAD Settings', 'woocommerce-analytics-dashboard' ), 'manage_woocommerce', 'wcad-settings', array( $this, 'render_settings' ) );
+        add_menu_page( __( 'WC Analytics', 'woocommerce-analytics-dashboard' ), __( 'WC Analytics', 'woocommerce-analytics-dashboard' ), 'manage_woocommerce', 'wcad-dashboard', array( $this, 'render' ), 'dashicons-chart-area', 56 );
+        add_submenu_page( 'wcad-dashboard', __( 'Overview', 'woocommerce-analytics-dashboard' ), __( 'Overview', 'woocommerce-analytics-dashboard' ), 'manage_woocommerce', 'wcad-dashboard', array( $this, 'render' ) );
+        add_submenu_page( 'wcad-dashboard', __( 'Sales Analytics', 'woocommerce-analytics-dashboard' ), __( 'Sales Analytics', 'woocommerce-analytics-dashboard' ), 'manage_woocommerce', 'wcad-sales', array( $this, 'render_sales' ) );
+        add_submenu_page( 'wcad-dashboard', __( 'Orders Analytics', 'woocommerce-analytics-dashboard' ), __( 'Orders Analytics', 'woocommerce-analytics-dashboard' ), 'manage_woocommerce', 'wcad-orders', array( $this, 'render_orders' ) );
+        add_submenu_page( 'wcad-dashboard', __( 'Products Analytics', 'woocommerce-analytics-dashboard' ), __( 'Products Analytics', 'woocommerce-analytics-dashboard' ), 'manage_woocommerce', 'wcad-products', array( $this, 'render_products' ) );
+        add_submenu_page( 'wcad-dashboard', __( 'Customers Analytics', 'woocommerce-analytics-dashboard' ), __( 'Customers Analytics', 'woocommerce-analytics-dashboard' ), 'manage_woocommerce', 'wcad-customers', array( $this, 'render_customers' ) );
+        add_submenu_page( 'wcad-dashboard', __( 'Settings', 'woocommerce-analytics-dashboard' ), __( 'Settings', 'woocommerce-analytics-dashboard' ), 'manage_woocommerce', 'wcad-settings', array( $this, 'render_settings' ) );
     }
     public function settings() {
         register_setting( 'wcad_settings', 'wcad_default_range', array(
@@ -23,9 +26,27 @@ final class WCAD_Admin {
         ) );
     }
     public function assets( $hook ) {
-        if ( ! in_array( $hook, array( 'woocommerce_page_wcad-dashboard', 'woocommerce_page_wcad-settings', 'woocommerce_page_wcad-sales', 'woocommerce_page_wcad-orders' ), true ) ) { return; }
+        if ( ! isset( $_GET['page'] ) || ! in_array( sanitize_key( wp_unslash( $_GET['page'] ) ), array( 'wcad-dashboard', 'wcad-settings', 'wcad-sales', 'wcad-orders', 'wcad-products', 'wcad-customers' ), true ) ) { return; }
         wp_enqueue_style( 'wcad-admin', WCAD_URL . 'admin/assets/css/admin.css', array(), WCAD_VERSION );
-        if ( 'woocommerce_page_wcad-orders' === $hook ) {
+        if ( 'wcad-customers' === sanitize_key( wp_unslash( $_GET['page'] ) ) ) {
+            wp_enqueue_script( 'wcad-chart', WCAD_URL . 'admin/assets/js/chart.js', array(), WCAD_VERSION, true );
+            wp_enqueue_script( 'wcad-customers', WCAD_URL . 'admin/assets/js/customers.js', array( 'wcad-chart' ), WCAD_VERSION, true );
+            wp_localize_script( 'wcad-customers', 'wcadCustomersConfig', array(
+                'endpoint' => esc_url_raw( rest_url( 'wcad/v1/customers' ) ),
+                'nonce' => wp_create_nonce( 'wp_rest' ),
+                'defaultDays' => (int) get_option( 'wcad_default_range', 30 ),
+            ) );
+        }
+        if ( 'wcad-products' === sanitize_key( wp_unslash( $_GET['page'] ) ) ) {
+            wp_enqueue_script( 'wcad-chart', WCAD_URL . 'admin/assets/js/chart.js', array(), WCAD_VERSION, true );
+            wp_enqueue_script( 'wcad-products', WCAD_URL . 'admin/assets/js/products.js', array( 'wcad-chart' ), WCAD_VERSION, true );
+            wp_localize_script( 'wcad-products', 'wcadProductsConfig', array(
+                'endpoint' => esc_url_raw( rest_url( 'wcad/v1/products' ) ),
+                'nonce' => wp_create_nonce( 'wp_rest' ),
+                'defaultDays' => (int) get_option( 'wcad_default_range', 30 ),
+            ) );
+        }
+        if ( 'wcad-orders' === sanitize_key( wp_unslash( $_GET['page'] ) ) ) {
             wp_enqueue_script( 'wcad-chart', WCAD_URL . 'admin/assets/js/chart.js', array(), WCAD_VERSION, true );
             wp_enqueue_script( 'wcad-orders', WCAD_URL . 'admin/assets/js/orders.js', array( 'wcad-chart' ), WCAD_VERSION, true );
             wp_localize_script( 'wcad-orders', 'wcadOrdersConfig', array(
@@ -34,7 +55,7 @@ final class WCAD_Admin {
                 'defaultDays' => (int) get_option( 'wcad_default_range', 30 ),
             ) );
         }
-        if ( 'woocommerce_page_wcad-sales' === $hook ) {
+        if ( 'wcad-sales' === sanitize_key( wp_unslash( $_GET['page'] ) ) ) {
             wp_enqueue_script( 'wcad-chart', WCAD_URL . 'admin/assets/js/chart.js', array(), WCAD_VERSION, true );
             wp_enqueue_script( 'wcad-sales', WCAD_URL . 'admin/assets/js/sales.js', array( 'wcad-chart' ), WCAD_VERSION, true );
             wp_localize_script( 'wcad-sales', 'wcadSalesConfig', array(
@@ -43,7 +64,7 @@ final class WCAD_Admin {
                 'defaultDays' => (int) get_option( 'wcad_default_range', 30 ),
             ) );
         }
-        if ( 'woocommerce_page_wcad-dashboard' === $hook ) {
+        if ( 'wcad-dashboard' === sanitize_key( wp_unslash( $_GET['page'] ) ) ) {
             wp_enqueue_script( 'wcad-chart', WCAD_URL . 'admin/assets/js/chart.js', array(), WCAD_VERSION, true );
             wp_enqueue_script( 'wcad-dashboard', WCAD_URL . 'admin/assets/js/dashboard.js', array( 'wcad-chart' ), WCAD_VERSION, true );
             wp_localize_script( 'wcad-dashboard', 'wcadConfig', array(
@@ -66,6 +87,14 @@ final class WCAD_Admin {
     public function render_orders() {
         if ( ! current_user_can( 'manage_woocommerce' ) ) { wp_die( esc_html__( 'Access denied.', 'woocommerce-analytics-dashboard' ) ); }
         require WCAD_PATH . 'admin/views/orders.php';
+    }
+    public function render_products() {
+        if ( ! current_user_can( 'manage_woocommerce' ) ) { wp_die( esc_html__( 'Access denied.', 'woocommerce-analytics-dashboard' ) ); }
+        require WCAD_PATH . 'admin/views/products.php';
+    }
+    public function render_customers() {
+        if ( ! current_user_can( 'manage_woocommerce' ) ) { wp_die( esc_html__( 'Access denied.', 'woocommerce-analytics-dashboard' ) ); }
+        require WCAD_PATH . 'admin/views/customers.php';
     }
     public function render_settings() {
         if ( ! current_user_can( 'manage_woocommerce' ) ) { wp_die( esc_html__( 'Access denied.', 'woocommerce-analytics-dashboard' ) ); }
