@@ -4,19 +4,27 @@ Tags: woocommerce, analytics, dashboard, reports
 Requires at least: 6.4
 Requires PHP: 8.1
 Requires Plugins: woocommerce
-Stable tag: 0.4.0
+Stable tag: 0.5.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 Admin dashboard framework for WooCommerce analytics.
 
 == Description ==
-Version 0.2.0 introduces a responsive admin dashboard, demo KPI cards, a demo sales chart, sample product table, 7/30/90-day filters, settings and a permission-protected REST endpoint. All financial values are simulated and are NOT actual WooCommerce sales.
+Version 0.5.0 provides live WooCommerce overview, Sales Analytics and Orders Analytics with 7/30/90-day filters, CSV export, and capability-protected REST endpoints. Financial reports require reconciliation before production use.
 
 == Installation ==
 Upload the plugin ZIP using Plugins > Add New > Upload Plugin, activate WooCommerce, then open WooCommerce > Analytics Dashboard.
 
 == Changelog ==
+= 0.5.0 =
+* Added Orders Analytics with order-status distribution, daily order trends, paid-order AOV and CSV export.
+* Orders use WooCommerce CRUD for HPOS compatibility and are counted by creation date.
+= 0.4.0 =
+* Added Sales Analytics with daily financial breakdown and CSV export.
+= 0.3.0 =
+* Added live WooCommerce overview metrics and product rankings.
+
 = 0.2.0 =
 * Added demo analytics interface, REST endpoint and settings.
 = 0.1.0 =
