@@ -20,7 +20,7 @@ final class WCAD_Reports {
         if ( $days < 1 || $days > 366 || $to > $today ) {
             return new WP_Error( 'wcad_report_range', __( 'Choose a date range of 1–366 days ending no later than today.', 'woocommerce-analytics-dashboard' ), array( 'status' => 400 ) );
         }
-        $key = 'wcad_report_080_' . md5( $type . '|' . $start . '|' . $end . '|' . (int) $compare );
+        $key = WCAD_Cache::key( 'report', $type . '|' . $start . '|' . $end . '|' . (int) $compare );
         $cached = get_transient( $key );
         if ( false !== $cached ) { return $cached; }
         $current = self::aggregate( $type, $from, $to->modify( '+1 day' ) );
@@ -76,7 +76,7 @@ final class WCAD_Reports {
                 }
             }
             $count = count( $orders );
-            if ( $page * self::PAGE_SIZE >= self::MAX_ORDERS && $count === self::PAGE_SIZE ) {
+            if ( $page * self::PAGE_SIZE >= self::MAX_ORDERS && $count === self::PAGE_SIZE && count( wc_get_orders( array( 'type' => 'shop_order', 'status' => array( 'wc-processing', 'wc-completed' ), 'date_created' => $from->getTimestamp() . '...' . ( $until->getTimestamp() - 1 ), 'limit' => 1, 'paged' => $page + 1, 'return' => 'ids' ) ) ) > 0 ) {
                 return new WP_Error( 'wcad_reports_limit', __( 'Too many orders; choose a shorter period.', 'woocommerce-analytics-dashboard' ), array( 'status' => 422 ) );
             }
             $page++;

@@ -6,7 +6,7 @@ final class WCAD_Sales {
     const MAX_ORDERS = 20000;
     public static function report( $days ) {
         $days = in_array( (int) $days, array( 7, 30, 90 ), true ) ? (int) $days : 30;
-        $key = 'wcad_sales_040_' . $days;
+        $key = WCAD_Cache::key( 'sales', $days );
         $cached = get_transient( $key );
         if ( false !== $cached ) { return $cached; }
         $period = WCAD_Date_Range::periods( $days );
@@ -61,7 +61,7 @@ final class WCAD_Sales {
         foreach ( $rows as &$row ) { foreach ( $row as $k => $v ) { if ( 'date' !== $k && 'orders' !== $k ) { $row[$k] = round( $v, $decimals ); } } } unset( $row );
         $data = array( 'days' => $days, 'currency' => get_woocommerce_currency(), 'totals' => $totals, 'rows' => array_values( $rows ),
             'notes' => __( 'Processing/completed orders only. Based on order creation date. Gross includes tax/shipping before discounts; net excludes tax/shipping after refunds. Tax/shipping values are before refund allocation; refunded taxes and shipping may affect reconciliation.', 'woocommerce-analytics-dashboard' ) );
-        set_transient( 'wcad_sales_040_' . $days, $data, 5 * MINUTE_IN_SECONDS );
+        set_transient( WCAD_Cache::key( 'sales', $days ), $data, 5 * MINUTE_IN_SECONDS );
         return $data;
     }
 }

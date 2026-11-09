@@ -6,7 +6,7 @@ final class WCAD_Orders {
     const MAX_ORDERS = 20000;
     public static function report( $days ) {
         $days = in_array( (int) $days, array( 7, 30, 90 ), true ) ? (int) $days : 30;
-        $cache_key = 'wcad_orders_050_' . $days;
+        $cache_key = WCAD_Cache::key( 'orders', $days );
         $cached = get_transient( $cache_key );
         if ( false !== $cached ) { return $cached; }
         $period = WCAD_Date_Range::periods( $days );

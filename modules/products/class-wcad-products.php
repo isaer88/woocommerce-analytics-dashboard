@@ -6,7 +6,7 @@ final class WCAD_Products {
     const MAX_ORDERS = 20000;
     public static function report( $days ) {
         $days = in_array( (int) $days, array( 7, 30, 90 ), true ) ? (int) $days : 30;
-        $cached = get_transient( 'wcad_products_060_' . $days );
+        $cached = get_transient( WCAD_Cache::key( 'products', $days ) );
         if ( false !== $cached ) { return $cached; }
         $period = WCAD_Date_Range::periods( $days );
         $daily = array();
@@ -80,7 +80,7 @@ final class WCAD_Products {
             'products' => $products, 'categories' => $categories, 'rows' => array_values( $daily ),
             'notes' => __( 'Processing/completed orders by creation date. Product revenue is line total after discounts, less itemized line refunds; excludes shipping and taxes. Non-itemized refunds cannot be assigned to products. Units exclude itemized refunded quantities. Each product is assigned to one category; variations are separate. Historical currency conversion is not performed.', 'woocommerce-analytics-dashboard' ),
         );
-        set_transient( 'wcad_products_060_' . $days, $result, 5 * MINUTE_IN_SECONDS );
+        set_transient( WCAD_Cache::key( 'products', $days ), $result, 5 * MINUTE_IN_SECONDS );
         return $result;
     }
 }

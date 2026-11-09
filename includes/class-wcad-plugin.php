@@ -13,6 +13,7 @@ final class WCAD_Plugin {
         $this->modules->load();
         require_once WCAD_PATH . 'includes/class-wcad-date-range.php';
         require_once WCAD_PATH . 'includes/class-wcad-cache.php';
+        WCAD_Cache::register_invalidation();
         require_once WCAD_PATH . 'includes/class-wcad-repository.php';
         require_once WCAD_PATH . 'modules/sales/class-wcad-sales.php';
         require_once WCAD_PATH . 'modules/orders/class-wcad-orders.php';
