@@ -18,6 +18,7 @@ final class WCAD_Plugin {
         require_once WCAD_PATH . 'modules/orders/class-wcad-orders.php';
         require_once WCAD_PATH . 'modules/products/class-wcad-products.php';
         require_once WCAD_PATH . 'modules/customers/class-wcad-customers.php';
+        require_once WCAD_PATH . 'modules/reports/class-wcad-reports.php';
         require_once WCAD_PATH . 'includes/class-wcad-rest-api.php';
         WCAD_REST_API::register();
         if ( is_admin() ) {
